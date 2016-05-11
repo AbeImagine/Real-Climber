@@ -6,7 +6,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Player extends Actor
+public class Player extends ScrollActor
 {
     
     private int vSpeed = 0;
@@ -24,6 +24,16 @@ public class Player extends Actor
     private GreenfootImage run6 = new GreenfootImage("Human_side_6.png");
     private GreenfootImage run7 = new GreenfootImage("Human_side_7.png");
     private GreenfootImage run8 = new GreenfootImage("Human_side_8.png");
+    
+    private GreenfootImage run1_l = new GreenfootImage("Human_side_1_l.png");
+    private GreenfootImage run2_l = new GreenfootImage("Human_side_2_l.png");
+    private GreenfootImage run3_l = new GreenfootImage("Human_side_3_l.png");
+    private GreenfootImage run4_l = new GreenfootImage("Human_side_4_l.png");
+    private GreenfootImage run5_l = new GreenfootImage("Human_side_5_l.png");
+    private GreenfootImage run6_l = new GreenfootImage("Human_side_6_l.png");
+    private GreenfootImage run7_l = new GreenfootImage("Human_side_7_l.png");
+    private GreenfootImage run8_l = new GreenfootImage("Human_side_8_l.png");
+    
     
     private int animationCounter = 0;
     
@@ -53,10 +63,11 @@ public class Player extends Actor
     }
     
     private void moveRight(){
-        setLocation(getX() + speed, getY());
+        getWorld().setCameraLocation(getGlobalX() + speed, getGlobalY());
         
-        if(animationCounter % 4 == 0)
+        if(animationCounter % 4 == 0){
             animateRight();
+        }
     }
     
     private void animateRight(){
@@ -89,15 +100,49 @@ public class Player extends Actor
         frame ++;
     }
     
+    private void animateLeft(){
+        if(frame == 1){
+            setImage(run1_l);
+        }
+        else if(frame == 2){
+            setImage(run2_l);
+        }
+        else if(frame == 3){
+            setImage(run3_l);
+        }
+        else if(frame == 4){
+            setImage(run4_l);
+        }
+        else if(frame == 5){
+            setImage(run5_l);
+        }
+        else if(frame == 6){
+            setImage(run6_l);
+        }
+        else if(frame == 7){
+            setImage(run7_l);
+        }
+        else if(frame == 8){
+            setImage(run8_l);
+            frame =1;
+            return;
+        }
+        frame ++;
+    }
+    
     private void moveLeft(){
-        setLocation(getX() - speed, getY());
+        getWorld().setCameraLocation(getGlobalX() - speed, getGlobalY());
+        
+        if(animationCounter % 4 == 0){
+            animateLeft();
+        }
     }
     
     /**
      * 
      */
     private void fall(){
-        setLocation(getX(), getY() + vSpeed);
+        getWorld().setCameraLocation(getGlobalX(), getGlobalY() + vSpeed);
         vSpeed = vSpeed + acceleration;
         jumping = true;
     }
@@ -109,7 +154,8 @@ public class Player extends Actor
         int spriteHeight = getImage().getHeight();
         int lookForGround = (int)(spriteHeight/2) + 2;
         
-        Actor ground = getOneObjectAtOffset(0, lookForGround, Block.class);
+        Actor groundA = getOneObjectAtOffset(0, lookForGround, Block.class);
+        ScrollActor ground = (ScrollActor)groundA;
         
         if(ground == null){
             jumping = true;
@@ -125,7 +171,8 @@ public class Player extends Actor
         int spriteHeight = getImage().getHeight();
         int yDistance = (int)(spriteHeight/-2);
         
-        Actor ceiling = getOneObjectAtOffset(0, yDistance, Block.class);
+        Actor ceilingA = getOneObjectAtOffset(0, yDistance, Block.class);
+        ScrollActor ceiling = (ScrollActor)ceilingA;
         
         if(ceiling != null){
             vSpeed = 1;
@@ -137,21 +184,21 @@ public class Player extends Actor
         }
     }
     
-    private void bopHead(Actor ceiling){
+    private void bopHead(ScrollActor ceiling){
         int ceilingHeight = ceiling.getImage().getHeight();
-        int newY = ceiling.getY() + (ceilingHeight + getImage().getHeight())/2;
+        int newY = ceiling.getGlobalY() + (ceilingHeight + getImage().getHeight())/2;
         
-        setLocation(getX(), newY);
+        getWorld().setCameraLocation(getGlobalX(), newY);
     }
     
     /**
      * 
      */
-    private void moveToGround(Actor ground){
+    private void moveToGround(ScrollActor ground){
         int groundHeight = ground.getImage().getHeight();
-        int newY = ground.getY() - (groundHeight + getImage().getHeight())/2;
+        int newY = ground.getGlobalY() - (groundHeight + getImage().getHeight())/2;
         
-        setLocation(getX(), newY);
+        getWorld().setCameraLocation(getGlobalX(), newY);
         jumping = false;
     }
     
